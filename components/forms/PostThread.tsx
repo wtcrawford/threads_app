@@ -20,6 +20,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ThreadValidation } from "@/lib/validations/thread";
 import { createThread } from "@/lib/actions/thread.actions";
 import { getRandomValues } from "crypto";
+import { useOrganization } from "@clerk/nextjs";
 
 interface Props {
     user: {
@@ -38,7 +39,9 @@ interface Props {
 function PostThread({ userId }: { userId: string }) {
     const router = useRouter();
     const pathname = usePathname();
-    const form = useForm({
+    const { organization } = useOrganization();
+
+    const form = useForm<z.infer<typeof ThreadValidation>>({
         resolver: zodResolver(ThreadValidation),
         defaultValues: {
             thread: '',
@@ -47,23 +50,22 @@ function PostThread({ userId }: { userId: string }) {
     });
 
     const onSubmit = async (values: z.infer<typeof ThreadValidation>) => {
-         await createThread({ 
+        await createThread({
             text: values.thread,
             author: userId,
-            communityId: null,
+            communityId: organization ? organization.id : null,
             path: pathname,
         })
 
         router.push("/")
     }
-
-
+    
     return (
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className=" flex flex-col justify-start gap-10 mt-10"
-            >
+                >
                 <FormField
                     control={form.control}
                     name="thread"

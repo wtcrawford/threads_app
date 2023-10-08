@@ -3,8 +3,6 @@ import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-
-
 async function Page() {
     const user = await currentUser();
     if (!user) return null;
@@ -15,9 +13,9 @@ async function Page() {
     const userData = {
         id: user?.id,
         objectId: userInfo?._id,
-        username: userInfo?.username || user.username,
-        name: userInfo?.name || user.firstName || "",
-        bio: userInfo?.bio || "",
+        username: userInfo ? userInfo?.username : user.username,
+        name: userInfo ? userInfo?.name : user.firstName || "",
+        bio: userInfo ? userInfo?.bio : "",
         image: userInfo ? userInfo?.image : user?.imageUrl,
     }
 
