@@ -181,3 +181,30 @@ export async function getActivity(userId: string) {
     throw error;
   }
 }
+
+//function for liking threads. Find user's id and the thread's id that is being liked
+export async function likeThread(userId: string, threadId: string) {
+  try {
+    await connectToDb();
+    const user = await User.findById(userId);
+    if (!user.likedThreads.includes(threadId)) {
+      //pushes the liked thread ID into the array of likedThreads we created in the model
+      user.likedThreads.push(threadId);
+      await user.save();
+    }
+  } catch (error) {
+    console.error("Error liking thread", error);
+  }
+}
+
+
+export async function unlikeThread(userId: string, threadId: string) {
+  try {
+    await connectToDb();
+    const user = await User.findById(userId);
+    user.likedThreads = user.likedThreads.filter((id: string) => id.toString() !== threadId);
+    await user.save();
+  } catch (error) {
+    console.error("Error unliking thread:", error);
+  }
+}

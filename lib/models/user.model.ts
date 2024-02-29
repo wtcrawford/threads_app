@@ -14,6 +14,13 @@ const userSchema = new mongoose.Schema({
             ref: 'Thread'
         }
     ],
+    likedThreads: [
+        //array of thread IDs
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Thread',
+        }
+    ],
     onboarded: {
         type: Boolean,
         default: false,

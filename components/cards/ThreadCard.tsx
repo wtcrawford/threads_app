@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { formatDateString } from "@/lib/utils";
 import DeleteThread from "../forms/DeleteThread";
+import { likeThread, unlikeThread } from "@/lib/actions/user.actions";
 
 
 interface Props {
@@ -27,6 +28,7 @@ interface Props {
         };
     }[];
     isComment?: boolean;
+    isLiked?: boolean;
 }
 
 function ThreadCard({
@@ -39,7 +41,16 @@ function ThreadCard({
     createdAt,
     comments,
     isComment,
+    isLiked,
 }: Props) {
+    const handleLike = async () => {
+        if (isLiked) {
+            await unlikeThread(currentUserId, id);
+        } else {
+            await likeThread(currentUserId, id);
+        }
+    };
+
     return (
         <article
             className={`flex w-full flex-col rounded-xl ${isComment ? "px-0 xs:px-7" : "bg-dark-2 p-7"
@@ -71,6 +82,7 @@ function ThreadCard({
 
                         <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
                             <div className='flex gap-3.5'>
+                                {/* <button onClick={handleLike}> {isLiked ? 'Unlike' : 'Like'}</button> */}
                                 <Image
                                     src='/assets/heart-gray.svg'
                                     alt='heart'
@@ -81,7 +93,7 @@ function ThreadCard({
                                 <Link href={`/thread/${id}`}>
                                     <Image
                                         src='/assets/reply.svg'
-                                        alt='heart'
+                                        alt='reply'
                                         width={24}
                                         height={24}
                                         className='cursor-pointer object-contain'
@@ -89,14 +101,14 @@ function ThreadCard({
                                 </Link>
                                 <Image
                                     src='/assets/repost.svg'
-                                    alt='heart'
+                                    alt='repost'
                                     width={24}
                                     height={24}
                                     className='cursor-pointer object-contain'
                                 />
                                 <Image
                                     src='/assets/share.svg'
-                                    alt='heart'
+                                    alt='share'
                                     width={24}
                                     height={24}
                                     className='cursor-pointer object-contain'
