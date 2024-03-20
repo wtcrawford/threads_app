@@ -1,6 +1,6 @@
 "use server";
 
-import { FilterQuery, SortOrder } from "mongoose";
+import mongoose, { FilterQuery, SortOrder } from "mongoose";
 import { revalidatePath } from "next/cache";
 
 import Community from "../models/community.model";
@@ -8,6 +8,16 @@ import Thread from "../models/thread.model";
 import User from "../models/user.model";
 
 import { connectToDb } from "../mongoose";
+import { error } from "console";
+
+interface Params {
+  userId: string;
+  username: string;
+  name: string;
+  bio: string;
+  image: string;
+  path: string;
+}
 
 export async function fetchUser(userId: string) {
   try {
@@ -20,15 +30,6 @@ export async function fetchUser(userId: string) {
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
   }
-}
-
-interface Params {
-  userId: string;
-  username: string;
-  name: string;
-  bio: string;
-  image: string;
-  path: string;
 }
 
 export async function updateUser({
@@ -186,25 +187,64 @@ export async function getActivity(userId: string) {
 export async function likeThread(userId: string, threadId: string) {
   try {
     await connectToDb();
-    const user = await User.findById(userId);
+
+    const user = await User.findOne({ id: userId })
+    const thread = await Thread.findOne({ id: threadId })
+
+    if (!user || !thread) {
+      throw new Error('User or thread not found');
+    }
+
+    //add threadid to the user's likedThreads array if not already there
     if (!user.likedThreads.includes(threadId)) {
-      //pushes the liked thread ID into the array of likedThreads we created in the model
       user.likedThreads.push(threadId);
       await user.save();
     }
+
+    if (!thread.likedByUsers.includes(userId)) {
+      thread.likedByUsers.push(userId);
+      await thread.save();
+    }
+
   } catch (error) {
     console.error("Error liking thread", error);
+    throw error;
   }
 }
+
 
 
 export async function unlikeThread(userId: string, threadId: string) {
   try {
     await connectToDb();
-    const user = await User.findById(userId);
-    user.likedThreads = user.likedThreads.filter((id: string) => id.toString() !== threadId);
+
+    const user = await User.findOne({ id: userId })
+
+    if (!user) {
+      throw new Error(`User with ${userId} not found`);
+    }
+
+    user.likedThreads = user.likedThreads.pull(threadId);
     await user.save();
+    console.log(user.likedThreads)
   } catch (error) {
     console.error("Error unliking thread:", error);
+  }
+}
+
+export async function fetchLikedThreadsByUser(userId: string) {
+  try {
+    await connectToDb();
+
+    const user = await User.findOne({ id: userId });
+
+    if (!user) {
+      throw new Error(`User with ${userId} not found`);
+    }
+
+    return user.likedThreads;
+  } catch (error) {
+    console.error("Error fetching liked threads:", error)
+    throw error;
   }
 }

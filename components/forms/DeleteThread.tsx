@@ -20,20 +20,21 @@ function DeleteThread({
     parentId,
     isComment,
 }: Props) {
-    const pathname= usePathname();
+    const pathname = usePathname();
     const router = useRouter();
 
-    if(currentUserId !== authorId || pathname ==="/") return null;
+    if (currentUserId !== authorId || pathname === "/") return null;
 
-    return(
+    return (
         <Image
             src='/assets/delete.svg'
             alt='delete'
             width={18}
             height={18}
             className="cursor-pointer object-contain"
-            onClick={ async () => {
-                await deleteThread(JSON.parse(threadId), pathname);
+            onClick={async () => {
+                //JSON.parse deleted. "JSON.parse(threadId)"
+                await deleteThread((threadId), pathname);
                 if (!parentId || !isComment) {
                     router.push('/');
                 }

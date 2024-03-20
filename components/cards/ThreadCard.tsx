@@ -1,13 +1,21 @@
+// "use client"
+
 import Image from "next/image";
 import Link from "next/link";
 
 import { formatDateString } from "@/lib/utils";
 import DeleteThread from "../forms/DeleteThread";
-import { likeThread, unlikeThread } from "@/lib/actions/user.actions";
+import { fetchLikedThreadsByUser, likeThread, unlikeThread } from "@/lib/actions/user.actions";
+import LikeButton from "@/app/like-button/like-button";
+import { Button } from "../ui/button";
+import { threadId } from "worker_threads";
+import { useEffect, useState } from "react";
+import { fetchCommunities } from "@/lib/actions/community.actions";
 
 
 interface Props {
     id: string;
+    threadId: string;
     currentUserId: string;
     parentId: string | null;
     content: string;
@@ -31,7 +39,7 @@ interface Props {
     isLiked?: boolean;
 }
 
-function ThreadCard({
+export async function ThreadCard({
     id,
     currentUserId,
     parentId,
@@ -41,15 +49,18 @@ function ThreadCard({
     createdAt,
     comments,
     isComment,
-    isLiked,
+    threadId
 }: Props) {
-    const handleLike = async () => {
-        if (isLiked) {
-            await unlikeThread(currentUserId, id);
-        } else {
-            await likeThread(currentUserId, id);
-        }
-    };
+    console.log('ID:', id)
+
+    const likedData = await fetchLikedThreadsByUser(currentUserId)
+
+    const res = await fetchCommunities({
+        searchString: '',
+        pageNumber: 1,
+        pageSize: 25
+    })
+
 
     return (
         <article
@@ -82,13 +93,9 @@ function ThreadCard({
 
                         <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
                             <div className='flex gap-3.5'>
-                                {/* <button onClick={handleLike}> {isLiked ? 'Unlike' : 'Like'}</button> */}
-                                <Image
-                                    src='/assets/heart-gray.svg'
-                                    alt='heart'
-                                    width={24}
-                                    height={24}
-                                    className='cursor-pointer object-contain'
+                                <LikeButton
+                                    threadId={id}
+                                    userId={currentUserId}
                                 />
                                 <Link href={`/thread/${id}`}>
                                     <Image
@@ -127,7 +134,7 @@ function ThreadCard({
                 </div>
 
                 <DeleteThread
-                    threadId={JSON.stringify(id)}
+                    threadId={JSON.parse(JSON.stringify(id))}
                     currentUserId={currentUserId}
                     authorId={author.id}
                     parentId={parentId}
@@ -136,6 +143,7 @@ function ThreadCard({
             </div>
 
             {/* {console.log(community)} */}
+
 
             {!isComment && comments.length > 0 && (
                 <div className='ml-1 mt-3 flex items-center gap-2'>
@@ -155,6 +163,14 @@ function ThreadCard({
                             {comments.length} repl{comments.length > 1 ? "ies" : "y"}
                         </p>
                     </Link>
+                </div>
+            )}
+
+            {!isComment && !community && (
+                <div className="ml-1 mt-3 flex items-center gap-2">
+                    <p className='text-subtle-medium text-gray-1'>
+                        {formatDateString(createdAt)}
+                    </p>
                 </div>
             )}
 
@@ -178,6 +194,7 @@ function ThreadCard({
                     />
                 </Link>
             )}
+
         </article>
     );
 }

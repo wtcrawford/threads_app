@@ -14,6 +14,8 @@ interface Params {
     author: string,
     communityId: string | null,
     path: string,
+    //adding created at 3/11 to test timestamps for individual user posts and not community post
+    createdAt: string
 }
 
 
@@ -58,7 +60,7 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
 }
 
 
-export async function createThread({ text, author, communityId, path }: Params
+export async function createThread({ text, author, communityId, path, createdAt }: Params
 ) {
     try {
         connectToDb();
@@ -72,6 +74,7 @@ export async function createThread({ text, author, communityId, path }: Params
             text,
             author,
             community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
+            createdAt
         });
 
         // Update User model

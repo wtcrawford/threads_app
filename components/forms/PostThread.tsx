@@ -55,17 +55,19 @@ function PostThread({ userId }: { userId: string }) {
             author: userId,
             communityId: organization ? organization.id : null,
             path: pathname,
+            // 
+            createdAt: new Date().toISOString(), // Add the createdAt property with the current timestamp
         })
 
         router.push("/")
     }
-    
+
     return (
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className=" flex flex-col justify-start gap-10 mt-10"
-                >
+            >
                 <FormField
                     control={form.control}
                     name="thread"
