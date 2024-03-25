@@ -10,6 +10,8 @@ import User from "../models/user.model";
 import { connectToDb } from "../mongoose";
 import { error } from "console";
 
+connectToDb();
+
 interface Params {
   userId: string;
   username: string;
@@ -156,7 +158,7 @@ export async function fetchUsers({
 
 export async function getActivity(userId: string) {
   try {
-    connectToDb();
+    // connectToDb();
 
     // Find all threads created by the user
     const userThreads = await Thread.find({ author: userId });
@@ -186,7 +188,6 @@ export async function getActivity(userId: string) {
 //function for liking threads. Find user's id and the thread's id that is being liked
 export async function likeThread(userId: string, threadId: string) {
   try {
-    await connectToDb();
 
     const user = await User.findOne({ id: userId })
     const thread = await Thread.findOne({ id: threadId })
@@ -212,11 +213,8 @@ export async function likeThread(userId: string, threadId: string) {
   }
 }
 
-
-
 export async function unlikeThread(userId: string, threadId: string) {
   try {
-    await connectToDb();
 
     const user = await User.findOne({ id: userId })
 
@@ -226,15 +224,22 @@ export async function unlikeThread(userId: string, threadId: string) {
 
     user.likedThreads = user.likedThreads.pull(threadId);
     await user.save();
-    console.log(user.likedThreads)
   } catch (error) {
     console.error("Error unliking thread:", error);
   }
 }
 
 export async function fetchLikedThreadsByUser(userId: string) {
+  if (!userId) {
+    return [];
+  }
+
   try {
-    await connectToDb();
+    // connectToDb();
+
+    if (!userId) {
+      throw new Error("User ID is not provided");
+    }
 
     const user = await User.findOne({ id: userId });
 

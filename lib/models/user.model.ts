@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     likedThreads: [
         //array of thread IDs
         {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: 'Thread',
         }
     ],

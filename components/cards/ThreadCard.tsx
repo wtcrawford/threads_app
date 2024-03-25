@@ -51,15 +51,15 @@ export async function ThreadCard({
     isComment,
     threadId
 }: Props) {
-    console.log('ID:', id)
 
+    const threadIdStringified = (JSON.stringify(id))
     const likedData = await fetchLikedThreadsByUser(currentUserId)
 
-    const res = await fetchCommunities({
-        searchString: '',
-        pageNumber: 1,
-        pageSize: 25
-    })
+    // const res = await fetchCommunities({
+    //     searchString: '',
+    //     pageNumber: 1,
+    //     pageSize: 25
+    // })
 
 
     return (
@@ -94,7 +94,7 @@ export async function ThreadCard({
                         <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
                             <div className='flex gap-3.5'>
                                 <LikeButton
-                                    threadId={id}
+                                    threadId={threadIdStringified}
                                     userId={currentUserId}
                                 />
                                 <Link href={`/thread/${id}`}>

@@ -26,7 +26,7 @@ export default function LikeButton({ threadId, userId }: LikeButtonProps) {
     }, [userId, threadId]);
 
     async function handleClick() {
-
+        console.log(`likebutton clicked ${threadId}${userId}`)
         try {
             if (isLiked) {
                 await unlikeThread(userId, threadId);
