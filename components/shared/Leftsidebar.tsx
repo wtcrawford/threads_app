@@ -25,7 +25,7 @@ function LeftSidebar() {
                     // if (link.route === '/profile') link.route = `${link.route}/${userId}`
 
                     // Dynamically construct the href for the profile link
-                    const href = link.route === '/profile/' && userId ? `/profile/${userId}` : '/sign-in';
+                    const href = link.route === '/profile/' && userId ? `/profile/${userId}` : userId ? link.route : '/sign-in';
 
                     return (
                         <Link
