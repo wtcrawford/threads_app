@@ -236,18 +236,21 @@ export async function fetchLikedThreadsByUser(userId: string) {
 
   try {
     // connectToDb();
+    const user = await User.findOne({ userId });
+    // console.log(user.id)
 
-    if (!userId) {
-      throw new Error("User ID is not provided");
+    if (!user) {
+      throw new Error(`User with ${userId} not found`)
     }
 
-    const user = await User.findOne({ id: userId });
+    const likedThreads = user.likedThreads;
+    return likedThreads
 
     if (!user) {
       throw new Error(`User with ${userId} not found`);
     }
 
-    return user.likedThreads;
+    return user
   } catch (error) {
     console.error("Error fetching liked threads:", error)
     throw error;

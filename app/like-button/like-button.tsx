@@ -8,30 +8,30 @@ import { useEffect, useState } from "react";
 
 interface LikeButtonProps {
     threadId: string;
-    userId: string;
+    currentUserId: string;
+    likedData: any;
 }
 
-export default function LikeButton({ threadId, userId }: LikeButtonProps) {
+export default function LikeButton({ threadId, currentUserId }: LikeButtonProps) {
     // const [likes, setLikes] = useState(0);
     //make a liked post by specific users. setting up initial user liked
     const [isLiked, setIsLiked] = useState(false);
 
     useEffect(() => {
         async function fetchLikedThreads() {
-            const likedThreads = await fetchLikedThreadsByUser(userId);
+            const likedThreads = await fetchLikedThreadsByUser(currentUserId);
             setIsLiked(likedThreads.includes(threadId))
         }
 
         fetchLikedThreads();
-    }, [userId, threadId]);
+    }, [currentUserId, threadId]);
 
     async function handleClick() {
-        console.log(`likebutton clicked ${threadId}${userId}`)
         try {
             if (isLiked) {
-                await unlikeThread(userId, threadId);
+                await unlikeThread(currentUserId, threadId);
             } else {
-                await likeThread(userId, threadId);
+                await likeThread(currentUserId, threadId);
             }
             setIsLiked(!isLiked);
         } catch (error) {

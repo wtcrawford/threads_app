@@ -21,6 +21,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
     //find thread by id from URL from our params
     const thread = await fetchThreadById(params.id);
 
+
     return (
         <section className="relative">
             <div>
@@ -34,6 +35,8 @@ const Page = async ({ params }: { params: { id: string } }) => {
                     community={thread.community}
                     createdAt={thread.createdAt}
                     comments={thread.children}
+                    threadId={""}
+                    likedData={[]}
                 />
             </div>
 
@@ -57,7 +60,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
                         createdAt={childItem.createdAt}
                         comments={childItem.children}
                         isComment
-                    />
+                        threadId={""} likedData={[]} />
                 ))}
             </div>
         </section>

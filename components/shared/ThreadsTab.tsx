@@ -30,21 +30,17 @@ const ThreadsTab = async ({ currentUserId, accountId, accountType }: Props) => {
                     currentUserId={currentUserId}
                     parentId={thread.parentId}
                     content={thread.text}
-                    author={
-                        accountType === 'User' ? {
-                            name: res.name, image: res.image, id: res.id
-                        } : {
-                            name: thread.author.name, image: thread.author.image, id: thread.author.id
-                        }
-                    }
-                    community={
-                        accountType === 'Community' ? {
-                            name: res.name, image: res.image, id: res.id
-                        } : thread.community
-                    }
+                    author={accountType === 'User' ? {
+                        name: res.name, image: res.image, id: res.id
+                    } : {
+                        name: thread.author.name, image: thread.author.image, id: thread.author.id
+                    }}
+                    community={accountType === 'Community' ? {
+                        name: res.name, image: res.image, id: res.id
+                    } : thread.community}
                     createdAt={thread.createdAt}
                     comments={thread.children}
-                />
+                    threadId={""} likedData={[]} />
             ))}
         </section>
     )

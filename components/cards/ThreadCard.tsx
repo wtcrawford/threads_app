@@ -37,6 +37,7 @@ interface Props {
     }[];
     isComment?: boolean;
     isLiked?: boolean;
+    likedData: string[];
 }
 
 export async function ThreadCard({
@@ -49,7 +50,6 @@ export async function ThreadCard({
     createdAt,
     comments,
     isComment,
-    threadId
 }: Props) {
 
     const threadIdStringified = (JSON.stringify(id))
@@ -95,7 +95,8 @@ export async function ThreadCard({
                             <div className='flex gap-3.5'>
                                 <LikeButton
                                     threadId={threadIdStringified}
-                                    userId={currentUserId}
+                                    currentUserId={currentUserId}
+                                    likedData={likedData}
                                 />
                                 <Link href={`/thread/${id}`}>
                                     <Image
