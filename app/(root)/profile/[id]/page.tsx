@@ -6,16 +6,18 @@ import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import { useRouter } from "next/router";
 
 
-async function Page({ params }: { params: { id: string }}) {
+async function Page({ params }: { params: { id: string } }) {
     const user = await currentUser();
 
     if (!user) return null;
+    if (!user) redirect('/');
 
     const userInfo = await fetchUser(params.id)
     if (!userInfo?.onboarded) redirect('/onboarding');
-    
+
     return (
         <section>
             <ProfileHeader

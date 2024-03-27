@@ -1,15 +1,16 @@
 "use client"
 
 import { sidebarLinks } from "@/constants";
-import { SignOutButton, SignedIn, currentUser, useUser } from "@clerk/nextjs";
+import { SignIn, SignOutButton, SignedIn, currentUser, useAuth, useUser, withUser } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from 'next/navigation';
+import { redirect, usePathname, useRouter } from 'next/navigation';
 
 function LeftSidebar() {
     const router = useRouter();
     const pathname = usePathname();
     // const { userId } = useAuth();
+
 
     const { user } = useUser();
 
@@ -21,7 +22,7 @@ function LeftSidebar() {
                 {sidebarLinks.map((link) => {
                     const isActive = (pathname.includes(link.route) && link.route.length > 1) || pathname === link.route;
 
-                    // if(link.route === '/profile') link.route = `${link.route}/${userId}`
+                    // if (link.route === '/profile') link.route = `${link.route}/${userId}`
 
                     // Dynamically construct the href for the profile link
                     const href = link.route === '/profile/' && userId ? `/profile/${userId}` : link.route;

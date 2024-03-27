@@ -22,7 +22,7 @@ import { isBase64Image } from "@/lib/utils";
 import { useUploadThing } from "@/lib/uploadthing";
 import { updateUser } from "@/lib/actions/user.actions";
 import { usePathname } from "next/navigation";
-import { useRouter, useQuery } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface Props {
     user: {
